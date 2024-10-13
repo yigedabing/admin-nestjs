@@ -1,8 +1,13 @@
-import { ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common'
-import { Reflector } from '@nestjs/core'
-import { AuthGuard } from '@nestjs/passport'
-import { IS_SKIPAUTH_KEY } from './skip-auth'
-import { Request } from 'express'
+import {
+  ExecutionContext,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+import { IS_SKIPAUTH_KEY } from './decorators/skip-auth.decorator';
 
 /**
  * 请求头Authorization校验
@@ -10,19 +15,21 @@ import { Request } from 'express'
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
-    super()
+    super();
   }
 
   canActivate(context: ExecutionContext) {
     // 公共API
-    const isSkipAuth = this.reflector.getAllAndOverride<boolean>(IS_SKIPAUTH_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ])
+    const isSkipAuth = this.reflector.getAllAndOverride<boolean>(
+      IS_SKIPAUTH_KEY,
+      [context.getHandler(), context.getClass()],
+    );
     if (isSkipAuth) {
-      return true
+      return true;
     }
-    const { url, body, params, query, method } = context.switchToHttp().getRequest<Request>()
+    const { url, body, params, query, method } = context
+      .switchToHttp()
+      .getRequest<Request>();
     Logger.log({
       isSkipAuth: isSkipAuth ? '开放性API' : '身份认证API',
       method,
@@ -30,16 +37,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       body,
       params,
       query,
-    })
+    });
 
-    return super.canActivate(context)
+    return super.canActivate(context);
   }
 
   handleRequest(err: any, user: any) {
     if (err || !user) {
-      Logger.error('token验证没有通过，token已过期')
-      throw err || new UnauthorizedException('暂无访问权限')
+      Logger.error('token验证没有通过，token已过期');
+      throw err || new UnauthorizedException('暂无访问权限');
     }
-    return user
+    return user;
   }
 }
