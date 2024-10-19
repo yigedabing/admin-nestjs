@@ -1,47 +1,14 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Request } from 'express';
-import { LocalAuthGuard } from './auth/local-auth.guard';
-import { AuthService } from './auth/auth.service';
-import { UsersService } from './users/users.service';
 import { SkipAuth } from './auth/decorators/skip-auth.decorator';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private authService: AuthService,
-    private userService: UsersService,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get('public')
   @SkipAuth()
   getHello(): string {
     return this.appService.getHello();
-  }
-
-  @SkipAuth()
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  @HttpCode(200)
-  async login(@Req() req: Request) {
-    return this.authService.login(req.user as any);
-  }
-
-  @Get('profile')
-  async getProfile(@Req() req: Request) {
-    return req.user;
-  }
-
-  @Get('userList')
-  async getUserList() {
-    return this.userService.findAllUser();
   }
 }

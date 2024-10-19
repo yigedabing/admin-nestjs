@@ -30,6 +30,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const { url, body, params, query, method } = context
       .switchToHttp()
       .getRequest<Request>();
+
     Logger.log({
       isSkipAuth: isSkipAuth ? '开放性API' : '身份认证API',
       method,

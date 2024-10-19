@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["metatype", "nestjs", "SKIPAUTH"]
+  "cSpell.words": [
+    "metatype",
+    "nestjs",
+    "SKIPAUTH",
+    "sqlpub",
+    "typeorm",
+    "ygxb"
+  ]
 }
