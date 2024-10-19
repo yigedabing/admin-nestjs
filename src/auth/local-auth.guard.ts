@@ -1,7 +1,6 @@
 import { ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
@@ -9,9 +8,10 @@ export class LocalAuthGuard extends AuthGuard('local') {
     super();
   }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext) {
+    // 校验登陆验证码是否正确
+    // const isPass = await sleep();
+
     return super.canActivate(context);
   }
 
